@@ -163,4 +163,5 @@ class CapitalCityQuiz(tk.Tk):
 
 if __name__ == "__main__":
     app = CapitalCityQuiz()
+    app.start_quiz()  # Call start_quiz directly to run the quiz immediately
     app.mainloop()
