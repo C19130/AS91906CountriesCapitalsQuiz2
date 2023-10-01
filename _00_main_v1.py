@@ -2,7 +2,8 @@ import tkinter as tk
 from tkinter import messagebox
 import random
 
-# Quiz data (Question: [Options, Correct Option Index])
+# Define quiz data as a dictionary with questions, options, and correct answers
+# For Example: Quiz data (Question: [Options, Correct Option Index])
 quiz_data = {
     "What is the capital of France?": [["Berlin", "Paris", "London", "Rome"], 1],
     "What is the capital of Japan?": [["Tokyo", "Beijing", "Seoul", "Bangkok"], 0],
@@ -16,6 +17,7 @@ quiz_data = {
     "What is the capital of South Africa?": [["Johannesburg", "Cape Town", "Pretoria", "Durban"], 1],
 }
 
+# Create a class for the Capital City Quiz application
 class CapitalCityQuiz(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -28,6 +30,7 @@ class CapitalCityQuiz(tk.Tk):
         self.questions = []
         self.create_widgets()
 
+    # Create widgets for the initial start menu
     def create_widgets(self):
         self.title_label = tk.Label(self, text="Capital Cities Quiz", font=("Arial", 24), bg="#ffb7ce", fg="white")
         self.title_label.pack(pady=20)
@@ -38,7 +41,7 @@ class CapitalCityQuiz(tk.Tk):
 
         self.instructions_button = tk.Button(self, text="Instructions", font=("Arial", 16), command=self.show_instructions, bg="white", fg="#ffb7ce")
         self.instructions_button.pack(pady=10)
-
+    # Start the quiz by generating questions and initializing variables
     def start_quiz(self):
         self.questions = self.generate_quiz()
         self.score = 0
@@ -48,12 +51,12 @@ class CapitalCityQuiz(tk.Tk):
         self.start_button.destroy()
         self.instructions_button.destroy()
         self.create_quiz_widgets()
-
+    # Generate a random set of quiz questions from the quiz_data dictionary
     def generate_quiz(self):
         all_questions = list(quiz_data.keys())
         random.shuffle(all_questions)
         return all_questions[:4]
-
+    # Create widgets for the quiz questions and answers
     def create_quiz_widgets(self):
         self.question_label = tk.Label(self, text="", font=("Arial", 14), wraplength=300)
         self.question_label.pack(pady=10)
@@ -77,7 +80,7 @@ class CapitalCityQuiz(tk.Tk):
         self.quit_button.pack(pady=5)
 
         self.show_question()
-
+    # Display the current question and answer options
     def show_question(self):
         if self.question_index < len(self.questions):
             question = self.questions[self.question_index]
@@ -92,9 +95,10 @@ class CapitalCityQuiz(tk.Tk):
             self.next_question_button.config(state=tk.DISABLED)
         else:
             self.show_results()
-
+     # Check the user's answer and calculate the score
     def check_answer(self):
         selected_index = int(self.option_var.get())
+        # Return an error message box if the user trys to continue without selecting an answer
         if selected_index == -1:
             messagebox.showerror("Error", "Please select an answer before submitting.")
             return
@@ -102,7 +106,7 @@ class CapitalCityQuiz(tk.Tk):
         question = self.questions[self.question_index]
         options_data = quiz_data[question]
         correct_answer_index = options_data[1]
-
+        # Increase the score by one point if the selected option is correct
         if selected_index == correct_answer_index:
             self.score += 1
         self.user_answers[question] = (options_data[0][selected_index], options_data[0][correct_answer_index])
@@ -112,23 +116,24 @@ class CapitalCityQuiz(tk.Tk):
 
         self.submit_button.config(state=tk.DISABLED)
         self.next_question_button.config(state=tk.NORMAL)
-
+    # Move to the next question
     def next_question(self):
         self.question_index += 1
         self.show_question()
-
+    # Show quiz results and give feedback
     def show_results(self):
         result_message = f"You scored {self.score} out of {len(self.questions)}!\n\n"
         result_message += "Here are the questions you got wrong:\n\n"
 
         all_correct = True
         for question, (user_answer, correct_answer) in self.user_answers.items():
+            # Create a message for every wrong answer the user gave telling them how they were wrong
             if user_answer != correct_answer:
                 all_correct = False
                 result_message += f"Q: {question}\n"
                 result_message += f"Your Answer: {user_answer}\n"
                 result_message += f"Correct Answer: {correct_answer}\n\n"
-
+        # If the user answered every answer correctly, create a new window congratulating the user
         if all_correct:
             result_message = "Congratulations! You got all the questions right!\n\n" \
                              "Great job!"
@@ -137,7 +142,7 @@ class CapitalCityQuiz(tk.Tk):
 
         messagebox.showinfo("Quiz Results", result_message)
         self.return_to_start_menu()
-
+    # Return to the start menu
     def return_to_start_menu(self):
         self.question_index = 0
         self.score = 0
@@ -148,7 +153,7 @@ class CapitalCityQuiz(tk.Tk):
         self.next_question_button.destroy()
         self.quit_button.destroy()
         self.create_widgets()
-
+    # Display instructions to the user in a new window
     def show_instructions(self):
         instructions_text = "Welcome to the Capital City Quiz!\n\n"\
                             "You will be presented with questions about the capitals of different countries.\n"\
@@ -160,7 +165,7 @@ class CapitalCityQuiz(tk.Tk):
                             "Good luck!"
         messagebox.showinfo("Instructions", instructions_text)
 
-
+# Main program entry point
 if __name__ == "__main__":
     app = CapitalCityQuiz()
     app.mainloop()
